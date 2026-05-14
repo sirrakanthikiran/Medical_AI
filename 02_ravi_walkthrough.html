@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ravi's Walkthrough — From Raw EHR to AI Prediction</title>
+<style>
+  :root {
+    --bg-page: #faf9f5;
+    --bg-card: #ffffff;
+    --bg-surface: #f1efe8;
+    --text-primary: #1f1e1d;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.15);
+    --color-info-bg: #e6f1fb;
+    --color-info-text: #185fa5;
+    --color-info-border: #b5d4f4;
+    --color-danger-bg: #fcebeb;
+    --color-danger-text: #a32d2d;
+    --radius-md: 8px;
+    --radius-lg: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2.5rem 1.5rem;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.5;
+  }
+  .stage {
+    max-width: 1000px;
+    width: 100%;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 0 0 1.75rem;
+  }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .tab {
+    padding: 9px 16px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .tab:hover:not(.active) { background: var(--bg-surface); color: var(--text-primary); }
+  .tab.active {
+    background: var(--color-info-bg);
+    color: var(--color-info-text);
+    border-color: var(--color-info-border);
+    font-weight: 500;
+  }
+  .panel {
+    display: none;
+    padding: 1.25rem 1.5rem;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    min-height: 340px;
+  }
+  .panel.active { display: block; }
+  .panel p { font-size: 14.5px; margin: 0 0 14px; }
+  .code {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-size: 12.5px;
+    background: var(--bg-surface);
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    white-space: pre-wrap;
+    line-height: 1.7;
+    color: var(--text-primary);
+    border: 0.5px solid var(--border);
+    overflow-x: auto;
+  }
+  .row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .col-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 130px;
+  }
+  .col-value { font-size: 14px; color: var(--text-primary); flex: 1; }
+  .feature-table {
+    width: 100%;
+    font-size: 13px;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+  .feature-table th {
+    text-align: left;
+    padding: 9px 12px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .feature-table td {
+    padding: 9px 12px;
+    border-top: 0.5px solid var(--border);
+  }
+  .feature-table td:last-child {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    color: var(--color-info-text);
+  }
+  .risk-bar {
+    height: 30px;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    overflow: hidden;
+    position: relative;
+    margin: 14px 0;
+  }
+  .risk-fill {
+    height: 100%;
+    background: var(--color-danger-bg);
+    width: 73%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    color: var(--color-danger-text);
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .callout {
+    background: var(--color-info-bg);
+    border-left: 3px solid var(--color-info-text);
+    padding: 11px 16px;
+    font-size: 13.5px;
+    color: var(--color-info-text);
+    margin-top: 14px;
+  }
+  code {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12.5px;
+    background: var(--bg-surface);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  em { font-style: italic; color: var(--text-primary); }
+  .footer {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <p class="eyebrow">Figure 2 of 3 · Interactive walkthrough</p>
+  <h1>Ravi's data, stage by stage</h1>
+  <p class="subtitle">Click each tab to see what Ravi's data looks like at every step of the pipeline.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="show(1)">1. Raw EHR</button>
+    <button class="tab" onclick="show(2)">2. FHIR</button>
+    <button class="tab" onclick="show(3)">3. Recipe</button>
+    <button class="tab" onclick="show(4)">4. Clean table</button>
+    <button class="tab" onclick="show(5)">5. AI prediction</button>
+  </div>
+
+  <div class="panel active" id="p1">
+    <p>Ravi, 58, just had cardiac surgery. His data lives scattered across hospital systems:</p>
+    <div class="row"><span class="col-label">Admissions DB</span><span class="col-value">admit_dt: 2026-05-10, ward: CT-3, mrn: 887423</span></div>
+    <div class="row"><span class="col-label">Lab system</span><span class="col-value">CREAT_VAL: 1.4 mg/dL, drawn 14:22, analyzer-id: L7</span></div>
+    <div class="row"><span class="col-label">Monitor (ICU)</span><span class="col-value">spo2 sampled every 5 min: 94, 93, 91, 95, 96...</span></div>
+    <div class="row"><span class="col-label">OR notes (free text)</span><span class="col-value">"CABG x3, on-pump, CEC 92 min, extubated POD-1"</span></div>
+    <div class="row"><span class="col-label">Pharmacy</span><span class="col-value">DRUG_CD: N05CD05, dose: 1mg, route: IV</span></div>
+    <div class="callout">Every hospital codes these differently — no AI can read this directly.</div>
+  </div>
+
+  <div class="panel" id="p2">
+    <p>FHIR converts each fact into a standard <em>resource</em> with the same shape everywhere:</p>
+    <div class="code">{
+  "resourceType": "Observation",
+  "subject": { "reference": "Patient/ravi" },
+  "code": { "coding": [{
+    "system": "http://loinc.org",
+    "code": "2708-6",
+    "display": "Oxygen saturation"
+  }]},
+  "effectiveDateTime": "2026-05-10T16:30:00",
+  "valueQuantity": { "value": 94, "unit": "%" }
+}</div>
+    <p style="margin-top: 14px; font-size: 13px; color: var(--text-secondary);">Ravi now has a <code>Patient</code> resource, dozens of <code>Observation</code> resources (vitals, labs), <code>Condition</code> resources (diagnoses), and <code>Procedure</code> resources (the surgery) — all using internationally standard codes (LOINC, SNOMED, ICD-10).</p>
+  </div>
+
+  <div class="panel" id="p3">
+    <p>The paper's key idea: write a <em>recipe</em> in JSON that anyone can read, audit, and re-run. Example for Ravi's SpO2 feature:</p>
+    <div class="code">{
+  "name": "spo2_last_3_hours",
+  "description": "Average SpO2 over each of last 3 one-hour windows",
+  "fhirQuery": "Observation?code=http://loinc.org|2708-6",
+  "temporalAgg": {
+    "lastN": 3,
+    "windowPeriod": "h",
+    "windowSize": 1,
+    "aggOp": ["avg", "min", "max", "stddev"]
+  }
+}</div>
+    <div class="callout">This recipe travels — Spain, India, Japan can all run it against their own FHIR data and get directly comparable AI training datasets.</div>
+  </div>
+
+  <div class="panel" id="p4">
+    <p>The <code>onfhir-feast</code> engine runs the recipe and outputs a clean row for Ravi:</p>
+    <table class="feature-table">
+      <thead><tr><th>Feature name</th><th>What it means</th><th>Ravi's value</th></tr></thead>
+      <tbody>
+        <tr><td>age</td><td>Years at surgery</td><td>58</td></tr>
+        <tr><td>creatinine_pre_op</td><td>Kidney marker, before op</td><td>1.1</td></tr>
+        <tr><td>creatinine_first_24h</td><td>First reading after op</td><td>1.4</td></tr>
+        <tr><td>spo2_l1_w1h_avg</td><td>Avg SpO2, last 1h</td><td>94.2</td></tr>
+        <tr><td>spo2_l1_w1h_stddev</td><td>Variation, last 1h</td><td>2.1</td></tr>
+        <tr><td>cec_time_min</td><td>Bypass duration</td><td>92</td></tr>
+        <tr><td>hrs_since_surgery</td><td>Time elapsed</td><td>6</td></tr>
+        <tr><td colspan="2" style="color: var(--text-tertiary); font-style: italic;">... 909 more features</td><td style="color: var(--text-tertiary);">...</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 13px; color: var(--text-secondary); margin-top: 14px;">In the real study: 916 features × 141,805 rows across 1,022 surgical episodes.</p>
+  </div>
+
+  <div class="panel" id="p5">
+    <p>Ravi's row goes into the trained AI model (which the hospital trained earlier on similar rows from past patients):</p>
+    <div class="risk-bar"><div class="risk-fill">73%</div></div>
+    <p style="margin: 0;"><strong style="font-weight: 500;">Prediction:</strong> 73% probability of unexpected ICU readmission in the next 24 hours.</p>
+    <p style="font-size: 13px; color: var(--text-secondary); margin: 10px 0 0;">The same recipe that built the training dataset now feeds the live prediction — so the model sees Ravi's data in <em>exactly</em> the format it was trained on. That consistency is what makes the prediction trustworthy.</p>
+    <div class="callout">If Ravi were in a Spanish or Dutch hospital running the same recipe, the same model would give a comparable prediction. That's the EU Health Data Space dream.</div>
+  </div>
+
+  <div class="footer">Namli et al., 2024 · Frontiers in Medicine 11:1393123</div>
+</div>
+
+<script>
+function show(n) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('p' + n).classList.add('active');
+  document.querySelectorAll('.tab')[n - 1].classList.add('active');
+}
+</script>
+</body>
+</html>
