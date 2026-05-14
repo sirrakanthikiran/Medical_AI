@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Hospital Data to AI Prediction — Pipeline Overview</title>
+<style>
+  :root {
+    --bg-page: #faf9f5;
+    --bg-card: #ffffff;
+    --bg-surface: #f1efe8;
+    --text-primary: #1f1e1d;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.08);
+    --radius-md: 8px;
+    --radius-lg: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2.5rem 1.5rem;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.5;
+  }
+  .stage {
+    max-width: 1000px;
+    width: 100%;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 0 0 1.75rem;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  text { font-family: inherit; }
+  .t { font-size: 14px; font-weight: 400; }
+  .ts { font-size: 12px; font-weight: 400; }
+  .th { font-size: 14px; font-weight: 500; }
+  .arr { stroke: var(--text-secondary); stroke-width: 1.5; fill: none; }
+  .footer {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <p class="eyebrow">Figure 1 of 3</p>
+  <h1>From hospital chaos to AI prediction</h1>
+  <p class="subtitle">Tracing Ravi (58, post cardiac surgery) through the five stages of the paper's pipeline.</p>
+
+  <svg viewBox="0 0 680 280" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>Five-stage pipeline from raw EHR to AI prediction</title>
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="#5f5e5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- Stage 1 -->
+    <rect x="20" y="40" width="120" height="80" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+    <text class="th" x="80" y="68" text-anchor="middle" fill="#2C2C2A">1. Raw EHR</text>
+    <text class="ts" x="80" y="88" text-anchor="middle" fill="#5F5E5A">Messy hospital</text>
+    <text class="ts" x="80" y="104" text-anchor="middle" fill="#5F5E5A">database</text>
+
+    <!-- Stage 2 -->
+    <rect x="160" y="40" width="120" height="80" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+    <text class="th" x="220" y="68" text-anchor="middle" fill="#0C447C">2. FHIR</text>
+    <text class="ts" x="220" y="88" text-anchor="middle" fill="#185FA5">Common HL7</text>
+    <text class="ts" x="220" y="104" text-anchor="middle" fill="#185FA5">language</text>
+
+    <!-- Stage 3 -->
+    <rect x="300" y="40" width="120" height="80" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+    <text class="th" x="360" y="68" text-anchor="middle" fill="#085041">3. Recipe</text>
+    <text class="ts" x="360" y="88" text-anchor="middle" fill="#0F6E56">JSON pipeline</text>
+    <text class="ts" x="360" y="104" text-anchor="middle" fill="#0F6E56">definition</text>
+
+    <!-- Stage 4 -->
+    <rect x="440" y="40" width="120" height="80" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+    <text class="th" x="500" y="68" text-anchor="middle" fill="#3C3489">4. Clean table</text>
+    <text class="ts" x="500" y="88" text-anchor="middle" fill="#534AB7">Rows, columns</text>
+    <text class="ts" x="500" y="104" text-anchor="middle" fill="#534AB7">916 features</text>
+
+    <!-- Stage 5 -->
+    <rect x="580" y="40" width="80" height="80" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+    <text class="th" x="620" y="68" text-anchor="middle" fill="#712B13">5. AI</text>
+    <text class="ts" x="620" y="88" text-anchor="middle" fill="#993C1D">Risk score</text>
+    <text class="ts" x="620" y="104" text-anchor="middle" fill="#993C1D">for Ravi</text>
+
+    <!-- Connectors -->
+    <line x1="140" y1="80" x2="158" y2="80" class="arr" marker-end="url(#arrow)"/>
+    <line x1="280" y1="80" x2="298" y2="80" class="arr" marker-end="url(#arrow)"/>
+    <line x1="420" y1="80" x2="438" y2="80" class="arr" marker-end="url(#arrow)"/>
+    <line x1="560" y1="80" x2="578" y2="80" class="arr" marker-end="url(#arrow)"/>
+
+    <!-- Captions below -->
+    <text class="ts" x="80" y="150" text-anchor="middle" fill="#5F5E5A">Excel sheets,</text>
+    <text class="ts" x="80" y="166" text-anchor="middle" fill="#5F5E5A">SQL tables,</text>
+    <text class="ts" x="80" y="182" text-anchor="middle" fill="#5F5E5A">PDFs, lab files</text>
+
+    <text class="ts" x="220" y="150" text-anchor="middle" fill="#5F5E5A">Patient resource,</text>
+    <text class="ts" x="220" y="166" text-anchor="middle" fill="#5F5E5A">Observation,</text>
+    <text class="ts" x="220" y="182" text-anchor="middle" fill="#5F5E5A">Condition...</text>
+
+    <text class="ts" x="360" y="150" text-anchor="middle" fill="#5F5E5A">"Get SpO2</text>
+    <text class="ts" x="360" y="166" text-anchor="middle" fill="#5F5E5A">avg of last 3</text>
+    <text class="ts" x="360" y="182" text-anchor="middle" fill="#5F5E5A">1-hour windows"</text>
+
+    <text class="ts" x="500" y="150" text-anchor="middle" fill="#5F5E5A">avg_spo2 = 96</text>
+    <text class="ts" x="500" y="166" text-anchor="middle" fill="#5F5E5A">creatinine = 1.2</text>
+    <text class="ts" x="500" y="182" text-anchor="middle" fill="#5F5E5A">hrs_since_op = 6</text>
+
+    <text class="ts" x="620" y="150" text-anchor="middle" fill="#5F5E5A">73% risk</text>
+    <text class="ts" x="620" y="166" text-anchor="middle" fill="#5F5E5A">of ICU</text>
+    <text class="ts" x="620" y="182" text-anchor="middle" fill="#5F5E5A">readmit</text>
+
+    <rect x="20" y="220" width="640" height="46" rx="8" fill="#F1EFE8" stroke="none"/>
+    <text class="ts" x="340" y="240" text-anchor="middle" fill="#5F5E5A">The paper's contribution is stages 2, 3 and 4 — making the pipeline</text>
+    <text class="ts" x="340" y="256" text-anchor="middle" fill="#5F5E5A">transparent, reusable, and machine-readable.</text>
+  </svg>
+
+  <div class="footer">Namli et al., 2024 · Frontiers in Medicine 11:1393123</div>
+</div>
+</body>
+</html>
